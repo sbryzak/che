@@ -131,7 +131,6 @@ import org.eclipse.che.ide.editor.macro.EditorCurrentProjectNameMacro;
 import org.eclipse.che.ide.editor.macro.EditorCurrentProjectTypeMacro;
 import org.eclipse.che.ide.editor.synchronization.EditorContentSynchronizer;
 import org.eclipse.che.ide.editor.synchronization.EditorContentSynchronizerImpl;
-import org.eclipse.che.ide.editor.synchronization.EditorGroupSychronizationFactory;
 import org.eclipse.che.ide.editor.synchronization.EditorGroupSynchronization;
 import org.eclipse.che.ide.editor.synchronization.EditorGroupSynchronizationImpl;
 import org.eclipse.che.ide.filetypes.FileTypeRegistryImpl;
@@ -558,8 +557,7 @@ public class CoreGinModule extends AbstractGinModule {
         bind(EditorPartStackView.class);
 
         bind(EditorContentSynchronizer.class).to(EditorContentSynchronizerImpl.class).in(Singleton.class);
-        install(new GinFactoryModuleBuilder().implement(EditorGroupSynchronization.class, EditorGroupSynchronizationImpl.class)
-                                             .build(EditorGroupSychronizationFactory.class));
+        bind(EditorGroupSynchronization.class).to(EditorGroupSynchronizationImpl.class);
 
         bind(MessageDialogFooter.class);
         bind(MessageDialogView.class).to(MessageDialogViewImpl.class);
