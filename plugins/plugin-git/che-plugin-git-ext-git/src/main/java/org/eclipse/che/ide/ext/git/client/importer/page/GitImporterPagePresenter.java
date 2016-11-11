@@ -30,22 +30,21 @@ import java.util.Map;
 public class GitImporterPagePresenter extends AbstractWizardPage<MutableProjectConfig> implements GitImporterPageView.ActionDelegate {
 
     // An alternative scp-like syntax: [user@]host.xz:path/to/repo.git/
-    private static final RegExp SCP_LIKE_SYNTAX = RegExp.compile("([A-Za-z0-9_\\-]+\\.[A-Za-z0-9_\\-:]+)+:");
+    private static final RegExp SCP_LIKE_SYNTAX = RegExp.compile("^([A-Za-z0-9_\\.\\-]+@)?([A-Za-z0-9]+(\\.|\\-)?)*[A-Za-z0-9]+:" +
+                                                                 "([A-Za-z0-9_\\.\\-]+\\/?)*[A-Za-z0-9]+$");
     // the transport protocol
-    private static final RegExp PROTOCOL        = RegExp.compile("((http|https|git|ssh|ftp|ftps)://)");
-    // the address of the remote server between // and /
-    private static final RegExp HOST1           = RegExp.compile("//([A-Za-z0-9_\\-]+\\.[A-Za-z0-9_\\-:]+)+/");
-    // the address of the remote server between @ and : or /
-    private static final RegExp HOST2           = RegExp.compile("@([A-Za-z0-9_\\-]+\\.[A-Za-z0-9_\\-:]+)+[:/]");
+    private static final RegExp PROTOCOL        = RegExp.compile("(http|https|git|ssh|ftp|ftps)://");
+    // the address of the remote server between // or @ and : or /
+    private static final RegExp HOST            = RegExp.compile("(//|@)([A-Za-z0-9]+(\\.|\\-)?)*[A-Za-z0-9]+(/|:)");
     // the repository name
-    private static final RegExp REPO_NAME       = RegExp.compile("/[A-Za-z0-9_.\\-]+$");
+    private static final RegExp REPO_NAME       = RegExp.compile("/[A-Za-z0-9_\\.\\-]+$");
     // start with white space
     private static final RegExp WHITE_SPACE     = RegExp.compile("^\\s");
 
     private GitLocalizationConstant locale;
     private GitImporterPageView     view;
 
-    private boolean                 ignoreChanges;
+    private boolean ignoreChanges;
 
     @Inject
     public GitImporterPagePresenter(GitImporterPageView view,
@@ -252,13 +251,13 @@ public class GitImporterPagePresenter extends AbstractWizardPage<MutableProjectC
             return false;
         }
 
-        if (!(HOST1.test(url) || HOST2.test(url))) {
+        if (!HOST.test(url)) {
             view.markURLInvalid();
             view.setURLErrorMessage(locale.importProjectMessageHostIncorrect());
             return false;
         }
 
-        if (!(REPO_NAME.test(url))) {
+        if (!REPO_NAME.test(url)) {
             view.markURLInvalid();
             view.setURLErrorMessage(locale.importProjectMessageNameRepoIncorrect());
             return false;
