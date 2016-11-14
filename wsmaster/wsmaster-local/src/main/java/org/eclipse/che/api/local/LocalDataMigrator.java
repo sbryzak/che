@@ -167,7 +167,7 @@ public class LocalDataMigrator {
      * @throws Exception
      *         when any error occurs
      */
-    private static <T> int migrateAll(Migration<T> migration) throws Exception {
+    private static <T> int  migrateAll(Migration<T> migration) throws Exception {
         int migrated = 0;
         for (T entity : migration.getAllEntities()) {
             // Skip those entities which are already migrated.

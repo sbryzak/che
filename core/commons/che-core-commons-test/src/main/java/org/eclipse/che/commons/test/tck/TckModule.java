@@ -24,7 +24,7 @@ import java.util.ServiceLoader;
  * <p>The {@link ServiceLoader} mechanism is used for loading such modules
  * and for injecting them later. So each module which is TCK module must
  * provide the implementations list(as described by {@code ServiceLoader} mechanism)
- * in the file named <i>org.eclipse.che.commons.test.tck.TckModule</i> usually under
+ * in the file named <i>org.eclipse.che.commons.test.jpa.TckModule</i> usually under
  * <i>test/resources/META-INF/services</i> directory, then the {@link TckListener}
  * will recognise and load it.
  *
