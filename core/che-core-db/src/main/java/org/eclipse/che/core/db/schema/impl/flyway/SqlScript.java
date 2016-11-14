@@ -50,25 +50,27 @@ class SqlScript {
             return false;
         }
         final SqlScript that = (SqlScript)obj;
-        return index == that.index
-               && Objects.equals(resource.getLocation(), that.resource.getLocation())
+        return version == that.version
+               && index == that.index
+               && Objects.equals(resource, that.resource)
                && Objects.equals(location, that.location)
                && Objects.equals(versionDir, that.versionDir)
                && Objects.equals(vendor, that.vendor)
                && Objects.equals(name, that.name)
-               && Objects.equals(version, version);
+               && Objects.equals(migrationVersion, that.migrationVersion);
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 31 * hash + Objects.hashCode(resource.getLocation());
+        hash = 31 * hash + Objects.hashCode(resource);
         hash = 31 * hash + Objects.hashCode(location);
         hash = 31 * hash + Objects.hashCode(versionDir);
         hash = 31 * hash + Objects.hashCode(vendor);
         hash = 31 * hash + Objects.hashCode(name);
+        hash = 31 * hash + version;
         hash = 31 * hash + index;
-        hash = 31 * hash + Objects.hashCode(version);
+        hash = 31 * hash + Objects.hashCode(migrationVersion);
         return hash;
     }
 

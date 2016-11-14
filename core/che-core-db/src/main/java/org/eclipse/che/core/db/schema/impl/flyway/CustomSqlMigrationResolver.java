@@ -40,7 +40,7 @@ import static java.lang.String.format;
  * Resolves SQL migrations from the configured locations,
  * allows overriding of default scripts with vendor specific ones.
  *
- * <ul>Migrations script must follow the next rules:
+ * <ul>Migration scripts must follow the next rules:
  * <li>It must be placed in the project versionDir directory e.g. <i>5.0.1</i></li>
  * <li>Project versionDir directory must be placed in dedicated directory e.g. <i>resources/sql</i></li>
  * <li>Migration/Initialization script name must start with a number e.g <i>1.init.sql</i>,
@@ -53,16 +53,16 @@ import static java.lang.String.format;
  * <p>For the structure:
  * <pre>
  *   resources/
- *     /sql
- *       /5.0.0
- *         1.init.sql
- *       /5.0.0-M1
- *         1.rename_fields.sql
- *         2.add_workspace_constraint.sql
- *         /postgresql
- *           2.add_workspace_constraint.sql
- *       /5.0.1
- *         1.stacks_migration.sql
+ *      sql/
+ *        5.0.0/
+ *          1.init.sql
+ *        5.0.0-M1/
+ *          1.rename_fields.sql
+ *          2.add_workspace_constraint.sql
+ *          postgresql/
+ *            2.add_workspace_constraint.sql
+ *        5.0.1/
+ *          1.stacks_migration.sql
  * </pre>
  *
  * And configuration:
@@ -89,13 +89,13 @@ import static java.lang.String.format;
  * <pre>
  *  che/
  *    resources/
- *      /che-schema
- *        /5.0.0
+ *       che-schema/
+ *         5.0.0/
  *          1.init.sql
  *  another-project/
  *    resources/
- *      /custom-schema
- *        /5.0.0
+ *      custom-schema/
+ *        5.0.0/
  *          2.init_additional_tables.sql
  * </pre>
  *
