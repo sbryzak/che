@@ -92,7 +92,7 @@ import static java.lang.String.format;
  *
  * <p>Configuring:
  * <pre>
- * <i>META-INF/services/org.eclipse.che.commons.test.jpa.TckModule</i>
+ * <i>META-INF/services/org.eclipse.che.commons.test.tck.TckModule</i>
  * org.eclipse.mycomponent.MyTckModule
  *
  * <i>META-INF/services/org.testng.ITestNGListener</i>

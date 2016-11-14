@@ -11,12 +11,12 @@
 package org.eclipse.che.commons.test.tck;
 
 /**
- * This class is designed to clean up resources after jpa test.
+ * This class is designed to clean up resources after tck test.
  *
  * <p>Implementation should be defined in {@link TckModule}.
  * It can be defined common for all tests or test specific by using @Named annotation.
  * Cleaning of resources is invoked after finish of all tests methods from one test suite
- * that should contains one and only one jpa test class.
+ * that should contains one and only one tck test class.
  *
  * <p>The usage example:
  * <pre>

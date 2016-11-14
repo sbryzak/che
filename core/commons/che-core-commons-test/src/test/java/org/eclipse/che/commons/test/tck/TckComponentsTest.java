@@ -20,7 +20,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
 /**
- * Tests for {@code org.eclipse.che.commons.test.jpa.*} package.
+ * Tests for {@code org.eclipse.che.commons.test.tck.*} package.
  *
  * @author Yevhenii Voevodin
  */

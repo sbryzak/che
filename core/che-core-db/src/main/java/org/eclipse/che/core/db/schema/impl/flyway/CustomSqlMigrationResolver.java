@@ -77,7 +77,7 @@ import static java.lang.String.format;
  * <li>5.0.0.1 - initialization script based on file <i>sql/5.0.0/1.init.sql</i></li>
  * <li>5.0.0.1.1 - modification script based on file <i>sql/5.0.0-M1/1.rename_fields.sql</i></li>
  * <li>5.0.0.1.2 - modification script(if postgresql is current provider) based on file
- * <i>sql/5.0.0-M1/postgresql/2.add_workspace_constraint.sql</li>
+ * <li>sql/5.0.0-M1/postgresql/2.add_workspace_constraint.sql</li>
  * <li>5.0.1.1 - modification script based on file <i>sql/5.0.1/1.stacks_migrations.sql</i></li>
  * </ul>
  *
