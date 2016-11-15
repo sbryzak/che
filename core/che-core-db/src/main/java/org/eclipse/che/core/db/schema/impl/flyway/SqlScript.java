@@ -17,7 +17,7 @@ import org.flywaydb.core.internal.util.scanner.Resource;
 import java.util.Objects;
 
 /**
- * Defines a data structure for holding information about sql script.
+ * Data object for holding information about sql script.
  *
  * @author Yevhenii Voevodin
  */
@@ -29,9 +29,7 @@ class SqlScript {
     final String   vendor;
     final String   name;
 
-    int              version;
-    int              index;
-    MigrationVersion migrationVersion;
+    MigrationVersion version;
 
     SqlScript(Resource resource, Location location, String versionDir, String vendor, String name) {
         this.resource = resource;
@@ -50,14 +48,12 @@ class SqlScript {
             return false;
         }
         final SqlScript that = (SqlScript)obj;
-        return version == that.version
-               && index == that.index
-               && Objects.equals(resource, that.resource)
+        return Objects.equals(resource, that.resource)
                && Objects.equals(location, that.location)
                && Objects.equals(versionDir, that.versionDir)
                && Objects.equals(vendor, that.vendor)
                && Objects.equals(name, that.name)
-               && Objects.equals(migrationVersion, that.migrationVersion);
+               && Objects.equals(version, that.version);
     }
 
     @Override
@@ -68,9 +64,7 @@ class SqlScript {
         hash = 31 * hash + Objects.hashCode(versionDir);
         hash = 31 * hash + Objects.hashCode(vendor);
         hash = 31 * hash + Objects.hashCode(name);
-        hash = 31 * hash + version;
-        hash = 31 * hash + index;
-        hash = 31 * hash + Objects.hashCode(migrationVersion);
+        hash = 31 * hash + Objects.hashCode(version);
         return hash;
     }
 
@@ -82,8 +76,7 @@ class SqlScript {
                ", versionDir='" + versionDir + '\'' +
                ", vendor='" + vendor + '\'' +
                ", name='" + name + '\'' +
-               ", index=" + index +
-               ", migrationVersion=" + migrationVersion +
+               ", version=" + version +
                '}';
     }
 }

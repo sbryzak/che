@@ -21,7 +21,9 @@ import org.flywaydb.core.api.resolver.ResolvedMigration;
 import org.flywaydb.core.internal.dbsupport.DbSupport;
 import org.flywaydb.core.internal.resolver.ResolvedMigrationImpl;
 import org.flywaydb.core.internal.resolver.sql.SqlMigrationExecutor;
+import org.flywaydb.core.internal.util.Location;
 import org.flywaydb.core.internal.util.PlaceholderReplacer;
+import org.flywaydb.core.internal.util.scanner.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,8 +122,9 @@ public class CustomSqlMigrationResolver extends BaseMigrationResolver {
     private static final String DEFAULT_VENDOR_NAME = "default";
 
     private final String              vendorName;
-    private final ScriptsFinder       finder;
+    private final ResourcesFinder     finder;
     private final ScriptsIndexer      indexer;
+    private final SqlScriptCreator    scriptsCreator;
     private final DbSupport           dbSupport;
     private final PlaceholderReplacer placeholderReplacer;
 
@@ -131,8 +134,9 @@ public class CustomSqlMigrationResolver extends BaseMigrationResolver {
         this.vendorName = dbProviderName;
         this.dbSupport = dbSupport;
         this.placeholderReplacer = placeholderReplacer;
-        this.finder = new ScriptsFinder();
+        this.finder = new ResourcesFinder();
         this.indexer = new ScriptsIndexer();
+        this.scriptsCreator = new SqlScriptCreator();
     }
 
     @Override
@@ -146,8 +150,17 @@ public class CustomSqlMigrationResolver extends BaseMigrationResolver {
 
     private List<ResolvedMigration> resolveSqlMigrations() throws IOException, SQLException {
         LOG.info("Searching for sql scripts in locations {}", Arrays.toString(flywayConfiguration.getLocations()));
-        final ListMultimap<String, SqlScript> scripts = finder.findScripts(flywayConfiguration);
-        LOG.debug("Found scripts: {}", scripts);
+        final Map<Location, List<Resource>> allResources = finder.findResources(flywayConfiguration);
+        LOG.debug("Found scripts: {}", allResources);
+
+        final ListMultimap<String, >
+        for (Location location : allResources.keySet()) {
+            final List<Resource> resources = allResources.get(location);
+            for (Resource resource : resources) {
+                final SqlScript script = scriptsCreator.createScript(location, resource);
+
+            }
+        }
 
         // filter sql scripts according to current db provider
         final ListMultimap<String, SqlScript> versionToScripts = ArrayListMultimap.create();
@@ -180,7 +193,7 @@ public class CustomSqlMigrationResolver extends BaseMigrationResolver {
         final List<ResolvedMigration> migrations = new ArrayList<>(versionToScripts.size());
         for (SqlScript script : versionToScripts.values()) {
             final ResolvedMigrationImpl migration = new ResolvedMigrationImpl();
-            migration.setVersion(script.migrationVersion);
+            migration.setVersion(script.version);
             if (script.location.isFileSystem()) {
                 migration.setPhysicalLocation(script.resource.getLocationOnDisk());
                 migration.setScript(migration.getPhysicalLocation());
