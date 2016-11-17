@@ -16,7 +16,7 @@
     <parent>
         <artifactId>che-core-ide-parent</artifactId>
         <groupId>org.eclipse.che.core</groupId>
-        <version>5.0.0-M7-SNAPSHOT</version>
+        <version>5.0.0-M8-SNAPSHOT</version>
     </parent>
     <groupId>org.eclipse.che.core</groupId>
     <artifactId>che-core-ide-app</artifactId>
@@ -53,12 +53,12 @@
             <artifactId>javax.annotation-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.che.core</groupId>
-            <artifactId>che-core-api-auth</artifactId>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.che.core</groupId>
@@ -70,15 +70,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.che.core</groupId>
-            <artifactId>che-core-api-dto</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.che.core</groupId>
             <artifactId>che-core-api-factory-shared</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.che.core</groupId>
-            <artifactId>che-core-api-git-shared</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.che.core</groupId>
@@ -98,10 +90,6 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.che.core</groupId>
-            <artifactId>che-core-api-ssh-shared</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.che.core</groupId>
             <artifactId>che-core-api-user-shared</artifactId>
         </dependency>
         <dependency>
@@ -115,6 +103,10 @@
         <dependency>
             <groupId>org.eclipse.che.core</groupId>
             <artifactId>che-core-commons-gwt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.che.core</groupId>
+            <artifactId>che-core-commons-lang</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.che.core</groupId>
@@ -290,35 +282,27 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.eclipse.che.core</groupId>
-                <artifactId>che-core-api-dto-maven-plugin</artifactId>
-                <version>${project.version}</version>
-                <executions>
-                    <execution>
-                        <phase>process-sources</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>${project.groupId}</groupId>
-                        <artifactId>${project.artifactId}</artifactId>
-                        <version>${project.version}</version>
-                    </dependency>
-                </dependencies>
-                <configuration>
-                    <dtoPackages>
-                        <package>org.eclipse.che.ide.statepersistance.dto</package>
-                        <package>org.eclipse.che.ide.debug.dto</package>
-                    </dtoPackages>
-                    <outputDirectory>${dto-generator-out-directory}</outputDirectory>
-                    <genClassName>org.eclipse.che.ide.statepersistance.dto.DtoClientImpls</genClassName>
-                    <impl>client</impl>
-                </configuration>
-            </plugin>
+            <!--<plugin>-->
+            <!--<groupId>org.eclipse.che.core</groupId>-->
+            <!--<artifactId>che-core-api-dto-maven-plugin</artifactId>-->
+            <!--<version>${project.version}</version>-->
+            <!--<executions>-->
+            <!--<execution>-->
+            <!--<phase>process-sources</phase>-->
+            <!--<goals>-->
+            <!--<goal>generate</goal>-->
+            <!--</goals>-->
+            <!--</execution>-->
+            <!--</executions>-->
+            <!--<configuration>-->
+            <!--<dtoPackages>-->
+            <!--<package>org.eclipse.che.ide.statepersistance.dto</package>-->
+            <!--</dtoPackages>-->
+            <!--<outputDirectory>${dto-generator-out-directory}</outputDirectory>-->
+            <!--<genClassName>org.eclipse.che.ide.statepersistance.dto.DtoClientImpls</genClassName>-->
+            <!--<impl>client</impl>-->
+            <!--</configuration>-->
+            <!--</plugin>-->
             <plugin>
                 <groupId>org.eclipse.che.core</groupId>
                 <artifactId>che-core-dyna-provider-generator-maven-plugin</artifactId>

@@ -119,11 +119,6 @@ public class OperationsPerspectiveTest {
     }
 
     @Test
-    public void constructorShouldBeVerified() {
-        verify(partStackPresenter).addPart(machinePanel, null);
-    }
-
-    @Test
     public void perspectiveShouldBeDisplayed() {
         perspective.addPart(machinePanel, PartStackType.INFORMATION);
 
