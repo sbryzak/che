@@ -15,7 +15,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
 
-import org.eclipse.che.ide.api.notification.NotificationManager;
 import org.eclipse.che.ide.api.parts.PartStack;
 import org.eclipse.che.ide.extension.machine.client.perspective.widgets.machine.appliance.MachineAppliancePresenter;
 import org.eclipse.che.ide.extension.machine.client.perspective.widgets.machine.panel.MachinePanelPresenter;
@@ -29,7 +28,6 @@ import org.eclipse.che.providers.DynaProvider;
 
 import javax.validation.constraints.NotNull;
 
-import static org.eclipse.che.ide.api.constraints.Constraints.FIRST;
 import static org.eclipse.che.ide.api.parts.PartStackType.EDITING;
 import static org.eclipse.che.ide.api.parts.PartStackType.INFORMATION;
 import static org.eclipse.che.ide.api.parts.PartStackType.NAVIGATION;
@@ -52,7 +50,6 @@ public class OperationsPerspective extends AbstractPerspective {
                                  PartStackPresenterFactory stackPresenterFactory,
                                  MachinePanelPresenter machinePanel,
                                  RecipePartPresenter recipePanel,
-                                 NotificationManager notificationManager,
                                  MachineAppliancePresenter infoContainer,
                                  EventBus eventBus,
                                  DynaProvider dynaProvider) {
