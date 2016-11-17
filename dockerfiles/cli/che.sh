@@ -341,8 +341,8 @@ check_mounts() {
     CHE_HOST_DEVELOPMENT_REPO="${REPO_MOUNT}"
     CHE_CONTAINER_DEVELOPMENT_REPO="/repo"
 
-    DEFAULT_CHE_DEVELOPMENT_TOMCAT="assembly/assembly-main/target"
-    CHE_DEVELOPMENT_TOMCAT="${CHE_HOST_INSTANCE}/dev"
+    DEFAULT_CHE_ASSEMBLY="assembly/assembly-main/target/eclipse-che*/eclipse-che-*"
+    CHE_ASSEMBLY="${CHE_HOST_INSTANCE}/dev"
 
     if [[ ! -d "${CHE_CONTAINER_DEVELOPMENT_REPO}"  ]] || [[ ! -d "${CHE_CONTAINER_DEVELOPMENT_REPO}/assembly" ]]; then
       info "Welcome to Eclipse Che!"
@@ -365,7 +365,7 @@ check_mounts() {
       info "                         eclipse/che-cli:${CHE_VERSION} [COMMAND]"
       return 2
     fi
-    if [[ ! -d $(echo "${CHE_CONTAINER_DEVELOPMENT_REPO}"/"${DEFAULT_CHE_DEVELOPMENT_TOMCAT}"-*/) ]]; then
+    if [[ ! -d $(echo ${CHE_CONTAINER_DEVELOPMENT_REPO}/${DEFAULT_CHE_ASSEMBLY}) ]]; then
       info "Welcome to Eclipse Che!"
       info ""
       info "You volume mounted a Eclipse Che repo to :/repo, but we could not find a Tomcat assembly."

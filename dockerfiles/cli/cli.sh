@@ -748,7 +748,7 @@ cmd_init() {
   # in development mode we use init files from repo otherwise we use it from docker image
   if [ "${CHE_DEVELOPMENT_MODE}" = "on" ]; then
     docker_run -v "${CHE_HOST_CONFIG}":/copy \
-               -v "${CHE_HOST_DEVELOPMENT_REPO}":/files \
+               -v "${CHE_HOST_DEVELOPMENT_REPO}"/dockerfiles/init:/files \
                    $IMAGE_INIT
   else
     docker_run -v "${CHE_HOST_CONFIG}":/copy $IMAGE_INIT
@@ -770,8 +770,8 @@ cmd_init() {
     info "init" "  CHE_ENVIRONMENT=development"
     sed -i'.bak' "s|#CHE_DEVELOPMENT_REPO=.*|CHE_DEVELOPMENT_REPO=${CHE_HOST_DEVELOPMENT_REPO}|" "${REFERENCE_CONTAINER_ENVIRONMENT_FILE}"
     info "init" "  CHE_DEVELOPMENT_REPO=${CHE_HOST_DEVELOPMENT_REPO}"
-    sed -i'.bak' "s|#CHE_DEVELOPMENT_TOMCAT=.*|CHE_DEVELOPMENT_TOMCAT=${CHE_DEVELOPMENT_TOMCAT}|" "${REFERENCE_CONTAINER_ENVIRONMENT_FILE}"
-    info "init" "  CHE_DEVELOPMENT_TOMCAT=${CHE_DEVELOPMENT_TOMCAT}"
+    sed -i'.bak' "s|#CHE_ASSEMBLY=.*|CHE_ASSEMBLY=${CHE_ASSEMBLY}|" "${REFERENCE_CONTAINER_ENVIRONMENT_FILE}"
+    info "init" "  CHE_ASSEMBLY=${CHE_ASSEMBLY}"
   else
     sed -i'.bak' "s|#CHE_ENVIRONMENT=.*|CHE_ENVIRONMENT=production|" "${REFERENCE_CONTAINER_ENVIRONMENT_FILE}"
     info "init" "  CHE_ENVIRONMENT=production"
@@ -815,7 +815,7 @@ cmd_config() {
     # if dev mode is on, pick configuration sources from repo.
     # please note that in production mode update of configuration sources must be only on update.
     docker_run -v "${CHE_HOST_CONFIG}":/copy \
-               -v "${CHE_HOST_DEVELOPMENT_REPO}":/files \
+               -v "${CHE_HOST_DEVELOPMENT_REPO}"/dockerfiles/init:/files \
                   $IMAGE_INIT
 
     # in development mode to avoid permissions issues we copy tomcat assembly to ${CHE_INSTANCE}
@@ -827,7 +827,7 @@ cmd_config() {
         rm -rf "${CHE_CONTAINER_INSTANCE}/dev"
     fi
     # copy eclipse che development tomcat to ${CHE_INSTANCE} folder
-    cp -r "$(get_mount_path $(echo $CHE_CONTAINER_DEVELOPMENT_REPO/$DEFAULT_CHE_DEVELOPMENT_TOMCAT-*/))" \
+    cp -r "$(get_mount_path $(echo $CHE_CONTAINER_DEVELOPMENT_REPO/$DEFAULT_CHE_ASSEMBLY))" \
         "${CHE_CONTAINER_INSTANCE}/dev"
   fi
 
