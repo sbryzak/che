@@ -12,6 +12,5 @@ class che {
     ensure  => "present",
     content => template("che/che.properties.erb"),
     mode    => "644",
-    require => File[$config_dirs],
   }
 }
