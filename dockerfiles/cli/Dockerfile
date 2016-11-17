@@ -1,10 +1,13 @@
-
-# Contains the Che CLI.
+# Copyright (c) 2012-2016 Codenvy, S.A.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
 #
-# Build:
+# build:
 #   docker build -t eclipse/che-cli .
 #
-# Use:
+# use:
 #    docker run -v $(pwd):/che eclipse/che-cli [command]
 FROM alpine:3.4
 RUN mkdir -p /che \
@@ -17,8 +20,6 @@ RUN mkdir -p /che \
 ENV DOCKER_BUCKET get.docker.com
 ENV DOCKER_VERSION 1.11.2
 ENV DOCKER_SHA256 8c2e0c35e3cda11706f54b2d46c2521a6e9026a7b13c7d4b8ae1f3a706fc55e1
-#ENV DOCKER_COMPOSE_BUCKET github.com
-#ENV DOCKER_COMPOSE_VERSION 1.8.1
 
 RUN set -x \
 	&& curl -fSL "https://${DOCKER_BUCKET}/builds/Linux/x86_64/docker-${DOCKER_VERSION}.tgz" -o docker.tgz \
@@ -29,16 +30,11 @@ RUN set -x \
 	&& rm docker.tgz \
 	&& docker -v
 
-#RUN set -x \
-#  && curl -L https://${DOCKER_COMPOSE_BUCKET}/docker/compose/releases/download/1.8.1/run.sh > /usr/local/bin/docker-compose; chmod +x /usr/local/bin/docker-compose
-
 COPY che.sh /cli/
 COPY cli.sh /cli/
-COPY entrypoint.sh /
 COPY version /version/
 
-RUN chmod +x entrypoint.sh \
-    && chmod +x /cli/che.sh
+RUN chmod +x /cli/che.sh
 
 ENTRYPOINT ["/cli/che.sh"]
 

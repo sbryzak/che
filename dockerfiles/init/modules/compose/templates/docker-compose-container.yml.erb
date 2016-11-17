@@ -11,7 +11,7 @@ services:
   che:
     image: <%= ENV["IMAGE_CHE"] %>
     env_file:
-      - '<%= ENV["CHE_ENV_FILE"] %>'
+      - '/che/instance/config/che.env'
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock'
       - '<%= scope.lookupvar('che::che_instance') -%>/data:/data'

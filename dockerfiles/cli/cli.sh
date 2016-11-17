@@ -49,7 +49,7 @@ cli_init() {
 
   CHE_VERSION_FILE="che.ver"
   CHE_ENVIRONMENT_FILE="che.env"
-  CHE_COMPOSE_FILE="docker-compose.yml"
+  CHE_COMPOSE_FILE="docker-compose-container.yml"
   CHE_SERVER_CONTAINER_NAME="che"
   CHE_CONFIG_BACKUP_FILE_NAME="che_config_backup.tar"
   CHE_INSTANCE_BACKUP_FILE_NAME="che_instance_backup.tar"
@@ -159,9 +159,10 @@ check_host_volume_mount() {
   echo 'test' > /che/test  > "${LOGS}" 2>&1
 
   if [[ ! -f /che/test ]]; then
-    error "Docker installed, but unable to volume mount files from your host."
+    error "Docker installed, but unable to write files to your host."
     error "Have you enabled Docker to allow mounting host directories?"
-    return 1;
+    error "Did our CLI not have user rights to create files on your host?"
+    return 2;
   fi
 
   rm -rf /che/test
@@ -648,13 +649,20 @@ confirm_operation() {
 # Runs puppet image to generate Eclipse Che configuration
 generate_configuration_with_puppet() {
   debug $FUNCNAME
-  info "config" "Generating $CHE_MINI_PRODUCT_NAME configuration..."
+
+  if is_docker_for_windows; then
+      CHE_ENV_FILE=$(convert_posix_to_windows "${CHE_HOST_INSTANCE}/config/$CHE_MINI_PRODUCT_NAME.env")
+    else
+      CHE_ENV_FILE="${CHE_HOST_INSTANCE}/config/$CHE_MINI_PRODUCT_NAME.env"
+    fi
+
   # Note - bug in docker requires relative path for env, not absolute
   log "docker_run -it --env-file=\"${REFERENCE_CONTAINER_ENVIRONMENT_FILE}\" \
                       --env-file=/version/$CHE_VERSION/images \
                   -v \"${CHE_HOST_INSTANCE}\":/opt/${CHE_MINI_PRODUCT_NAME}:rw \
                   -v \"${CHE_HOST_CONFIG_MANIFESTS_FOLDER}\":/etc/puppet/manifests:ro \
                   -v \"${CHE_HOST_CONFIG_MODULES_FOLDER}\":/etc/puppet/modules:ro \
+                  -e "CHE_ENV_FILE=${CHE_ENV_FILE}" \
                       $IMAGE_PUPPET \
                           apply --modulepath \
                                 /etc/puppet/modules/ \
@@ -664,6 +672,7 @@ generate_configuration_with_puppet() {
                   -v "${CHE_HOST_INSTANCE}":/opt/${CHE_MINI_PRODUCT_NAME}:rw \
                   -v "${CHE_HOST_CONFIG_MANIFESTS_FOLDER}":/etc/puppet/manifests:ro \
                   -v "${CHE_HOST_CONFIG_MODULES_FOLDER}":/etc/puppet/modules:ro \
+                  -e "CHE_ENV_FILE=${CHE_ENV_FILE}" \
                       $IMAGE_PUPPET \
                           apply --modulepath \
                                 /etc/puppet/modules/ \
@@ -822,6 +831,7 @@ cmd_config() {
         "${CHE_CONTAINER_INSTANCE}/dev"
   fi
 
+  info "config" "Generating $CHE_MINI_PRODUCT_NAME configuration..."
   # Run the docker configurator
   if [ "${CHE_DEVELOPMENT_MODE}" = "on" ]; then
     # generate configs and print puppet output logs to console if dev mode is on
@@ -922,8 +932,7 @@ cmd_destroy() {
   docker_run -v "${CHE_HOST_CONFIG}":/root/che-config \
              -v "${CHE_HOST_INSTANCE}":/root/che-instance \
                 alpine:3.4 sh -c "rm -rf /root/che-instance/* && rm -rf /root/che-config/*"
-  log "rm -rf \"${CHE_CONTAINER_CONFIG}\" >> \"${LOGS}\""
-  log "rm -rf \"${CHE_CONTAINER_INSTANCE}\" >> \"${LOGS}\""
+  LOG_INITIALIZED=false
   rm -rf "${CHE_CONTAINER_CONFIG}"
   rm -rf "${CHE_CONTAINER_INSTANCE}"
 }
@@ -986,7 +995,6 @@ cmd_version() {
   text "$CHE_PRODUCT_NAME:\n"
   text "  Version:      %s\n" $(get_installed_version)
   text "  Installed:    %s\n" $(get_installed_installdate)
-  text "  CLI version:  $CHE_CLI_VERSION\n"
 
   if is_initialized; then
     text "\n"
@@ -1201,8 +1209,6 @@ cmd_debug() {
   info "CHE_BACKUP            = ${CHE_HOST_BACKUP}"
   info ""
   info "-----------  PLATFORM INFO  -----------"
-#  info "CLI DEFAULT PROFILE       = $(has_default_profile && echo $(get_default_profile) || echo "not set")"
-  info "CLI_VERSION               = ${CHE_CLI_VERSION}"
   info "DOCKER_INSTALL_TYPE       = $(get_docker_install_type)"
   info "IS_NATIVE                 = $(is_native && echo "YES" || echo "NO")"
   info "IS_WINDOWS                = $(has_docker_for_windows_client && echo "YES" || echo "NO")"
