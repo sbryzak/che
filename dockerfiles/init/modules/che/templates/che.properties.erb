@@ -131,6 +131,15 @@ che.docker.always_pull_image=true
 # to be able to launch their own runtimes which are embedded Docker containers.
 che.docker.privilege=false
 
+# Limits the number of processes that can be forked inside a cgroup. Set -1 for unlimited.
+# Since 4.3 kernel.
+che.docker.pids_limit=-1
+# Adds options when mounting the /projects volume.
+che.docker.volumes_projects_options=Z
+
+# Adds options when mounting the /mnt/che/terminal, /mnt/che/ws-agent.tar.gz, /mnt/che/conf volume
+che.docker.volumes_agent_options=ro,Z
+
 # If the browser clients that are accessing Che are remote AND the configuration of Docker is an
 # internal IP address or using Unix sockets, then remote browser clients will not be able to connect
 # to the workspace. Set the Docker configuration so that Docker containers have an external IP
@@ -160,15 +169,16 @@ che.docker.unused_containers_cleanup_min=60
 # Version number of the Docker API used within the Che implementation
 che.docker.api=1.20
 
+che.docker.network_driver=NULL
 
 che.docker.tcp_connection_timeout_ms=600000
 che.docker.tcp_connection_read_timeout_ms=600000
 
 # Docker registry example. Uncomment to add a registry configuration.
 # You can configure multiple registries with different names.
-#docker.registry.auth.<insert-name>.url=https://index.docker.io/v1/
-#docker.registry.auth.<insert-name>.username=<username>
-#docker.registry.auth.<insert-name>.password=<password>
+#che.docker.registry.auth.<insert-name>.url=https://index.docker.io/v1/
+#che.docker.registry.auth.<insert-name>.username=<username>
+#che.docker.registry.auth.<insert-name>.password=<password>
 
 # Allows to adjust machine swap memory by multiplying current machnine memory to provided value.
 # default is -1 which is unlimited swap. If set, value is multipled by machine memory set by user
@@ -186,24 +196,17 @@ notification.server.propagate_events=
 # a recurring schedule.
 schedule.core_pool_size=10
 
-# Everrest is a Java Web Services toolkit that manages JAX-RS and web socket communications
+# Everrest is a Java Web Services toolkit that manages JAX-RS & web socket communications
 # Users should rarely need to configure this.
 # Disable asynchronous mechanism that is embedded in everrest.
 org.everrest.asynchronous=false
-
 # Quantity of asynchronous requests which may be processed at the same time
 org.everrest.asynchronous.pool.size=20
-
-# Size of queue. If asynchronous request can't be processed it will be added in queue.
+# Size of queue. If asynchronous request can't be processed after consuming it will be added in queue.
 org.everrest.asynchronous.queue.size=500
-
-# Timeout in minutes for request. If after timeout request is not done or 
-# client did not come yet to get result of request it may be discarded.
+# Timeout in minutes for request. If after timeout request is not done or client did not come yet to get result of request it may be discarded.
 org.everrest.asynchronous.job.timeout=10
-
 # Size of cache for waiting, running and ended request.
 org.everrest.asynchronous.cache.size=1024
-
 # Path to asynchronous service
 org.everrest.asynchronous.service.path=/async/
-
