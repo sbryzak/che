@@ -205,7 +205,7 @@ public class PartStackPresenterTest {
     public void partShouldBeHidden() {
         presenter.addPart(partPresenter);
 
-        presenter.hidePart(partPresenter);
+        presenter.minimize(partPresenter);
 
         verify(partButton).unSelect();
 

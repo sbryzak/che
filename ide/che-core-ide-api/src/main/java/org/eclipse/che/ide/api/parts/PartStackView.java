@@ -11,6 +11,7 @@
 package org.eclipse.che.ide.api.parts;
 
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -27,7 +28,7 @@ public interface PartStackView extends View<PartStackView.ActionDelegate> {
     }
 
     /** Tab which can be clicked and closed */
-    interface TabItem extends ClickHandler {
+    interface TabItem extends ClickHandler, DoubleClickHandler {
 
         @NotNull
         IsWidget getView();
@@ -90,4 +91,5 @@ public interface PartStackView extends View<PartStackView.ActionDelegate> {
         /** PartStack is being clicked and requests Focus */
         void onRequestFocus();
     }
+
 }

@@ -30,7 +30,7 @@ import org.eclipse.che.ide.api.action.CustomComponentAction;
 import org.eclipse.che.ide.api.action.Presentation;
 import org.eclipse.che.ide.api.parts.Perspective;
 import org.eclipse.che.ide.api.parts.PerspectiveManager;
-import org.eclipse.che.ide.ui.FontAwesome;
+import org.eclipse.che.ide.api.FontAwesome;
 
 /**
  * @author Evgen Vidolob
@@ -110,12 +110,12 @@ public class ExpandEditorAction extends Action implements CustomComponentAction 
         expanded = !expanded;
 
         if (expanded) {
-            perspective.maximizeCentralPart();
+            perspective.maximizeCentralPartStack();
             if (button != null) {
                 button.getElement().setInnerHTML(FontAwesome.COMPRESS);
             }
         } else {
-            perspective.restoreParts();
+            perspective.restore();
             if (button != null) {
                 button.getElement().setInnerHTML(FontAwesome.EXPAND);
             }

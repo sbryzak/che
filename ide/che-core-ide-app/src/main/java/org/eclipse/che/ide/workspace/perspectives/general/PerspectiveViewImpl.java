@@ -70,6 +70,8 @@ public class PerspectiveViewImpl extends LayoutPanel implements PerspectiveView<
     @UiField(provided = true)
     final WorkBenchResources resources;
 
+    private ActionDelegate delegate;
+
     @Inject
     public PerspectiveViewImpl(WorkBenchResources resources) {
         this.resources = resources;
@@ -94,7 +96,7 @@ public class PerspectiveViewImpl extends LayoutPanel implements PerspectiveView<
     /** {@inheritDoc} */
     @Override
     public void setDelegate(ActionDelegate delegate) {
-        // do nothing
+        this.delegate = delegate;
     }
 
     /** {@inheritDoc} */
@@ -282,6 +284,13 @@ public class PerspectiveViewImpl extends LayoutPanel implements PerspectiveView<
         Widget widget = infoPanel.getWidget();
         if (widget instanceof RequiresResize) {
             ((RequiresResize)widget).onResize();
+        }
+
+        int width = getOffsetWidth();
+        int height = getOffsetHeight();
+
+        if (delegate != null) {
+            delegate.onResize(width, height);
         }
     }
 

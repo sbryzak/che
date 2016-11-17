@@ -61,6 +61,7 @@ public class PartStackPresenter implements Presenter, PartStackView.ActionDelega
     private final PartsComparator                 partsComparator;
     private final Map<PartPresenter, Constraints> constraints;
     private final PartStackEventHandler           partStackHandler;
+    private final EventBus                        eventBus;
 
     protected final Map<TabItem, PartPresenter> parts;
     protected final TabItemFactory              tabItemFactory;
@@ -70,6 +71,10 @@ public class PartStackPresenter implements Presenter, PartStackView.ActionDelega
     protected PartPresenter activePart;
     protected TabItem       activeTab;
     protected double        currentSize;
+
+    private State state = State.NORMAL;
+
+    private ActionDelegate delegate;
 
     @Inject
     public PartStackPresenter(final EventBus eventBus,
@@ -81,6 +86,7 @@ public class PartStackPresenter implements Presenter, PartStackView.ActionDelega
         this.view = view;
         this.view.setDelegate(this);
 
+        this.eventBus = eventBus;
         this.partStackHandler = partStackEventHandler;
         this.workBenchPartController = workBenchPartController;
         this.tabItemFactory = tabItemFactory;
@@ -106,6 +112,11 @@ public class PartStackPresenter implements Presenter, PartStackView.ActionDelega
         }
 
         currentSize = DEFAULT_PART_SIZE;
+    }
+
+    @Override
+    public void setDelegate(ActionDelegate delegate) {
+        this.delegate = delegate;
     }
 
     private void updatePartTab(@NotNull PartPresenter part) {
@@ -189,14 +200,15 @@ public class PartStackPresenter implements Presenter, PartStackView.ActionDelega
     /** {@inheritDoc} */
     @Override
     public void setActivePart(@NotNull PartPresenter part) {
-        TabItem activeTab = getTabByPart(part);
+        TabItem tab = getTabByPart(part);
 
-        if (activeTab == null) {
+        if (tab == null) {
             return;
         }
 
         activePart = part;
-        selectActiveTab(activeTab);
+        activeTab = tab;
+        selectActiveTab(tab);
     }
 
     @Nullable
@@ -209,20 +221,6 @@ public class PartStackPresenter implements Presenter, PartStackView.ActionDelega
         }
 
         return null;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void hidePart(PartPresenter part) {
-        TabItem activeTab = getTabByPart(part);
-
-        if (activeTab == null) {
-            return;
-        }
-
-        this.activeTab = activeTab;
-
-        onTabClicked(activeTab);
     }
 
     /** {@inheritDoc} */
@@ -273,19 +271,115 @@ public class PartStackPresenter implements Presenter, PartStackView.ActionDelega
         view.setFocus(focused);
     }
 
+    @Override
+    public void maximize() {
+        if (state == State.MAXIMIZED) {
+            workBenchPartController.maximize();
+            return;
+        }
+
+        if (state != State.NORMAL) {
+            return;
+        }
+
+        currentSize = workBenchPartController.getSize();
+        workBenchPartController.maximize();
+        state = State.MAXIMIZED;
+
+        if (delegate != null) {
+            delegate.onMaximize(this);
+        }
+    }
+
+    @Override
+    public void collapse() {
+        if (state != State.NORMAL) {
+            return;
+        }
+
+        currentSize = workBenchPartController.getSize();
+        workBenchPartController.setSize(0);
+        state = State.COLLAPSED;
+
+        if (activeTab != null) {
+            activeTab.unSelect();
+        }
+    }
+
+    @Override
+    public State getPartStackState() {
+        return state;
+    }
+
+    @Override
+    public void minimize() {
+        if (state == State.MAXIMIZED) {
+            if (delegate != null) {
+                delegate.onRestore(this);
+            }
+        }
+
+        if (state == State.NORMAL) {
+            currentSize = workBenchPartController.getSize();
+            workBenchPartController.setSize(0);
+            state = State.MINIMIZED;
+        }
+
+        if (activeTab != null) {
+            activeTab.unSelect();
+        }
+    }
+
+    @Override
+    public void restore() {
+        if (state == State.MINIMIZED || state == State.NORMAL) {
+            return;
+        }
+
+        State prevState = state;
+        state = State.NORMAL;
+        workBenchPartController.setSize(currentSize);
+
+        if (prevState == State.MAXIMIZED) {
+            if (delegate != null) {
+                delegate.onRestore(this);
+            }
+        }
+
+        if (activeTab != null) {
+            activeTab.select();
+        }
+    }
+
     /** {@inheritDoc} */
     @Override
     public void onTabClicked(@NotNull TabItem selectedTab) {
-        //handle somehow part close event
+        if (state == State.MINIMIZED) {
+            state = State.COLLAPSED;
+        }
+
+        if (state == State.COLLAPSED) {
+            activeTab = selectedTab;
+
+            if (delegate != null) {
+                delegate.onRestore(this);
+            }
+
+            activePart = parts.get(selectedTab);
+            activePart.onOpen();
+            selectActiveTab(activeTab);
+
+            return;
+        }
+
         if (selectedTab.equals(activeTab)) {
-            selectedTab.unSelect();
+            if (state == State.NORMAL) {
+                minimize();
 
-            currentSize = workBenchPartController.getSize();
-
-            workBenchPartController.setSize(0);
-
-            activeTab = null;
-            activePart = null;
+                activeTab.unSelect();
+                activeTab = null;
+                activePart = null;
+            }
 
             return;
         }
@@ -313,4 +407,5 @@ public class PartStackPresenter implements Presenter, PartStackView.ActionDelega
         /** PartStack is being clicked and requests Focus */
         void onRequestFocus(PartStack partStack);
     }
+
 }

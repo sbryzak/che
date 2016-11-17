@@ -17,13 +17,20 @@ package org.eclipse.che.ide.api.parts.base;
  */
 public interface BaseActionDelegate {
 
-    /** Hide Part from UI */
-    void minimize();
+    /**
+     * Maximizes the part.
+     */
+    void onMaximize();
+
+    /**
+     * Minimizes the part.
+     */
+    void onMinimize();
 
     /**
      * Activate Part when clicking the mouse.
      * Is used when the Part contains frames and mouse events are blocked.
      */
-    void activatePart();
+    void onActivate();
 
 }

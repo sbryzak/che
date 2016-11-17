@@ -16,6 +16,8 @@ import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.user.client.ui.Composite;
@@ -25,6 +27,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
+import org.eclipse.che.ide.api.FontAwesome;
 import org.eclipse.che.ide.api.mvp.View;
 import org.eclipse.che.ide.api.parts.Focusable;
 import org.eclipse.che.ide.api.parts.PartStackUIResources;
@@ -42,6 +45,8 @@ import javax.validation.constraints.NotNull;
  * @author Codenvy crowd
  */
 public abstract class BaseView<T extends BaseActionDelegate> extends Composite implements View<T>, Focusable {
+
+    private final PartStackUIResources resources;
 
     /** Root widget */
     private DockLayoutPanel container;
@@ -67,6 +72,8 @@ public abstract class BaseView<T extends BaseActionDelegate> extends Composite i
     };
 
     public BaseView(PartStackUIResources resources) {
+        this.resources = resources;
+
         container = new DockLayoutPanel(Style.Unit.PX);
         container.getElement().setAttribute("role", "part");
         container.setSize("100%", "100%");
@@ -98,6 +105,22 @@ public abstract class BaseView<T extends BaseActionDelegate> extends Composite i
         titleLabel.setStyleName(resources.partStackCss().ideBasePartTitleLabel());
         toolbarHeader.addWest(titleLabel, 200);
 
+        addMinimizeButton();
+        addMaximizeButton();
+
+        /**
+         * Handle double clicking on the toolbar header
+         */
+        toolbarHeader.addDomHandler(new DoubleClickHandler() {
+            @Override
+            public void onDoubleClick(DoubleClickEvent event) {
+                onMaximize();
+            }
+        }, DoubleClickEvent.getType());
+
+    }
+
+    private void addMinimizeButton() {
         SVGImage minimize = new SVGImage(resources.collapseExpandIcon());
         minimize.getElement().setAttribute("name", "workBenchIconMinimize");
         minimizeButton = new ToolButton(minimize);
@@ -105,7 +128,7 @@ public abstract class BaseView<T extends BaseActionDelegate> extends Composite i
         minimizeButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                minimize();
+                onMinimize();
             }
         });
 
@@ -113,7 +136,41 @@ public abstract class BaseView<T extends BaseActionDelegate> extends Composite i
 
         if (minimizeButton.getElement() instanceof elemental.dom.Element) {
             Tooltip.create((elemental.dom.Element) minimizeButton.getElement(),
-                PositionController.VerticalAlign.BOTTOM, PositionController.HorizontalAlign.MIDDLE, "Hide");
+                    PositionController.VerticalAlign.BOTTOM, PositionController.HorizontalAlign.MIDDLE, "Hide");
+        }
+    }
+
+    private void addMaximizeButton() {
+        ToolButton maximizeButton = new ToolButton(FontAwesome.ARROWS_ALT);
+        maximizeButton.getElement().setAttribute("name", "maximizePart");
+        maximizeButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                onMaximize();
+            }
+        });
+
+        addToolButton(maximizeButton);
+
+        if (maximizeButton.getElement() instanceof elemental.dom.Element) {
+            Tooltip.create((elemental.dom.Element) maximizeButton.getElement(),
+                    PositionController.VerticalAlign.BOTTOM, PositionController.HorizontalAlign.MIDDLE, "Maximize panel");
+        }
+    }
+
+    private void addMenuButton() {
+        ToolButton menuButton = new ToolButton(FontAwesome.ELLIPSIS_V);
+        menuButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+            }
+        });
+
+        addToolButton(menuButton);
+
+        if (menuButton.getElement() instanceof elemental.dom.Element) {
+            Tooltip.create((elemental.dom.Element) menuButton.getElement(),
+                    PositionController.VerticalAlign.BOTTOM, PositionController.HorizontalAlign.MIDDLE, "Panel options");
         }
     }
 
@@ -167,10 +224,21 @@ public abstract class BaseView<T extends BaseActionDelegate> extends Composite i
         this.delegate = delegate;
     }
 
-    /** Requests delegate to minimize the part */
-    protected void minimize() {
+    /**
+     * Maximizes the view.
+     */
+    public void onMaximize() {
         if (delegate != null) {
-            delegate.minimize();
+            delegate.onMaximize();
+        }
+    }
+
+    /**
+     * Minimizes the view.
+     */
+    public void onMinimize() {
+        if (delegate != null) {
+            delegate.onMinimize();
         }
     }
 

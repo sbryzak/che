@@ -58,12 +58,9 @@ public class OperationsPerspective extends AbstractPerspective {
                                  DynaProvider dynaProvider) {
         super(OPERATIONS_PERSPECTIVE_ID, view, stackPresenterFactory, partViewFactory, controllerFactory, eventBus, dynaProvider);
 
-        notificationManager.addRule(OPERATIONS_PERSPECTIVE_ID);
-
         //central panel
         partStacks.put(EDITING, infoContainer);
 
-        addPart(notificationManager, INFORMATION, FIRST);
         addPart(machinePanel, NAVIGATION);
         addPart(recipePanel, NAVIGATION);
 

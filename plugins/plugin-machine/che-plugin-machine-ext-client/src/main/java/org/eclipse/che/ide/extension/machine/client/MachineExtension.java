@@ -184,7 +184,7 @@ public class MachineExtension {
             public void execute() {
                 Perspective perspective = perspectiveManager.getActivePerspective();
                 if (perspective != null) {
-                    perspective.maximizeBottomPart();
+                    perspective.maximizeBottomPartStack();
                 }
             }
         });
@@ -196,7 +196,7 @@ public class MachineExtension {
     private void restoreTerminal() {
         Perspective perspective = perspectiveManager.getActivePerspective();
         if (perspective != null) {
-            perspective.restoreParts();
+            perspective.restore();
         }
     }
 

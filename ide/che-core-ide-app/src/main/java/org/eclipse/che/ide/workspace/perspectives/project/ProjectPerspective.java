@@ -33,7 +33,6 @@ import static org.eclipse.che.ide.api.parts.PartStackType.INFORMATION;
 import static org.eclipse.che.ide.api.parts.PartStackType.NAVIGATION;
 import static org.eclipse.che.ide.api.parts.PartStackType.TOOLING;
 
-
 /**
  * General-purpose, displaying all the PartStacks in a default manner:
  * Navigation at the left side;
@@ -90,4 +89,5 @@ public class ProjectPerspective extends AbstractPerspective {
     public void go(@NotNull AcceptsOneWidget container) {
         container.setWidget(view);
     }
+
 }

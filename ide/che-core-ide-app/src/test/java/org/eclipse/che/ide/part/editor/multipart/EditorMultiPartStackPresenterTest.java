@@ -142,10 +142,10 @@ public class EditorMultiPartStackPresenterTest {
     @Test
     public void shouldHidePart() {
         presenter.addPart(partPresenter1);
-        presenter.hidePart(partPresenter1);
+        presenter.minimize();
 
         verify(editorPartStack).containsPart(partPresenter1);
-        verify(editorPartStack).hidePart(partPresenter1);
+        verify(editorPartStack).minimize();
     }
 
     @Test

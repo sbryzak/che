@@ -186,12 +186,12 @@ public class AbstractPerspectiveTest {
 
         perspective.hidePart(partPresenter);
 
-        verify(partStackPresenter).hidePart(partPresenter);
+        verify(partStackPresenter).minimize();
     }
 
     @Test
     public void partsShouldBeCollapsed() {
-        perspective.maximizeCentralPart();
+        perspective.maximizeCentralPartStack();
 
         verify(workBenchController, times(3)).getSize();
         verify(workBenchController, times(3)).setHidden(true);
@@ -199,8 +199,8 @@ public class AbstractPerspectiveTest {
 
     @Test
     public void partsShouldBeRestored() {
-        perspective.maximizeBottomPart();
-        perspective.restoreParts();
+        perspective.maximizeBottomPartStack();
+        perspective.restore();
         verify(workBenchController, times(3)).setSize(anyDouble());
     }
 
