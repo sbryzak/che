@@ -202,7 +202,6 @@ public abstract class AbstractPerspective implements Presenter, Perspective,
         }
 
         if (partStack.equals(maximizedPartStack)) {
-            onRestore(partStack);
             return;
         }
 

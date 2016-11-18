@@ -391,10 +391,6 @@ public class PartStackPresenter implements Presenter, PartStackView.ActionDelega
     }
 
     private void selectActiveTab(@NotNull TabItem selectedTab) {
-        double partSize = workBenchPartController.getSize();
-        currentSize = partSize >= MIN_PART_SIZE ? partSize : currentSize;
-
-        workBenchPartController.setSize(currentSize);
         workBenchPartController.setHidden(false);
 
         PartPresenter selectedPart = parts.get(selectedTab);
