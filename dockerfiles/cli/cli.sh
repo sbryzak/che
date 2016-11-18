@@ -156,7 +156,7 @@ grab_initial_images() {
 }
 
 check_host_volume_mount() {
-  echo 'test' > /che/test  > "${LOGS}" 2>&1
+  echo 'test' > /che/test >> "${LOGS}" 2>&1
 
   if [[ ! -f /che/test ]]; then
     error "Docker installed, but unable to write files to your host."
@@ -854,11 +854,11 @@ cmd_start() {
        info "start" "Server logs at \"docker logs -f ${CHE_SERVER_CONTAINER_NAME}\""
        info "start" "Ver: $(get_installed_version)"
        if ! is_docker_for_mac; then
-         info "start" "Use: http://${CHE_HOST}"
-         info "start" "API: http://${CHE_HOST}/swagger"
+         info "start" "Use: http://${CHE_HOST}:${CHE_PORT}"
+         info "start" "API: http://${CHE_HOST}:${CHE_PORT}/swagger"
        else
-         info "start" "Use: http://localhost"
-         info "start" "API: http://localhost/swagger"
+         info "start" "Use: http://localhost:${CHE_PORT}"
+         info "start" "API: http://localhost:${CHE_PORT}/swagger"
        fi
        return
     fi
@@ -898,13 +898,15 @@ cmd_stop() {
   fi
 
   info "stop" "Stopping containers..."
-  log "docker_compose --file=\"${REFERENCE_CONTAINER_COMPOSE_FILE}\" -p=$CHE_MINI_PRODUCT_NAME stop >> \"${LOGS}\" 2>&1 || true"
-  docker_compose --file="${REFERENCE_CONTAINER_COMPOSE_FILE}" \
-                 -p=$CHE_MINI_PRODUCT_NAME stop >> "${LOGS}" 2>&1 || true
-  info "stop" "Removing containers..."
-  log "y | docker_compose --file=\"${REFERENCE_CONTAINER_COMPOSE_FILE}\" -p=$CHE_MINI_PRODUCT_NAME rm >> \"${LOGS}\" 2>&1 || true"
-  docker_compose --file="${REFERENCE_CONTAINER_COMPOSE_FILE}" \
-                 -p=$CHE_MINI_PRODUCT_NAME rm --force >> "${LOGS}" 2>&1 || true
+  if is_initialized; then
+    log "docker_compose --file=\"${REFERENCE_CONTAINER_COMPOSE_FILE}\" -p=$CHE_MINI_PRODUCT_NAME stop >> \"${LOGS}\" 2>&1 || true"
+    docker_compose --file="${REFERENCE_CONTAINER_COMPOSE_FILE}" \
+                   -p=$CHE_MINI_PRODUCT_NAME stop >> "${LOGS}" 2>&1 || true
+    info "stop" "Removing containers..."
+    log "docker_compose --file=\"${REFERENCE_CONTAINER_COMPOSE_FILE}\" -p=$CHE_MINI_PRODUCT_NAME rm >> \"${LOGS}\" 2>&1 || true"
+    docker_compose --file="${REFERENCE_CONTAINER_COMPOSE_FILE}" \
+                   -p=$CHE_MINI_PRODUCT_NAME rm --force >> "${LOGS}" 2>&1 || true
+  fi
 }
 
 cmd_restart() {
@@ -932,7 +934,7 @@ cmd_destroy() {
   docker_run -v "${CHE_HOST_CONFIG}":/root/che-config \
              -v "${CHE_HOST_INSTANCE}":/root/che-instance \
                 alpine:3.4 sh -c "rm -rf /root/che-instance/* && rm -rf /root/che-config/*"
-  LOG_INITIALIZED=false
+
   rm -rf "${CHE_CONTAINER_CONFIG}"
   rm -rf "${CHE_CONTAINER_INSTANCE}"
 }

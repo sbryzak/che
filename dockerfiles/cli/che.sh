@@ -287,6 +287,7 @@ check_mounts() {
   INSTANCE_MOUNT=$(get_container_instance_folder)
   BACKUP_MOUNT=$(get_container_backup_folder)
   REPO_MOUNT=$(get_container_repo_folder)
+  CLI_MOUNT=$(get_container_cli_folder)
 
   TRIAD=""
   if [[ "${CONFIG_MOUNT}" != "not set" ]] && \
@@ -377,7 +378,7 @@ check_mounts() {
 
 init_logging() {
   # Initialize CLI folder
-  CLI_DIR="${CHE_CONTAINER_INSTANCE}/logs/cli"
+  CLI_DIR="/cli"
   test -d "${CLI_DIR}" || mkdir -p "${CLI_DIR}"
 
   # Ensure logs folder exists
@@ -415,6 +416,12 @@ get_container_backup_folder() {
 get_container_repo_folder() {
   THIS_CONTAINER_ID=$(get_this_container_id)
   FOLDER=$(get_container_host_bind_folder ":/repo" $THIS_CONTAINER_ID)
+  echo "${FOLDER:=not set}"
+}
+
+get_container_cli_folder() {
+  THIS_CONTAINER_ID=$(get_this_container_id)
+  FOLDER=$(get_container_host_bind_folder ":/cli/cli.log" $THIS_CONTAINER_ID)
   echo "${FOLDER:=not set}"
 }
 
@@ -519,7 +526,7 @@ init() {
     source /repo/dockerfiles/cli/cli.sh
   else
     # Use the CLI that is inside the container.
-    source /cli/cli.sh
+    source /scripts/cli.sh
   fi
 }
 
@@ -527,7 +534,7 @@ init() {
 set -e
 set -u
 
-# Bootstrap enough stuff to load /cli/cli.sh
+# Bootstrap enough stuff to load /scripts/cli.sh
 init "$@"
 
 # Begin product-specific CLI calls

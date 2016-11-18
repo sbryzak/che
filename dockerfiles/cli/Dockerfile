@@ -30,12 +30,12 @@ RUN set -x \
 	&& rm docker.tgz \
 	&& docker -v
 
-COPY che.sh /cli/
-COPY cli.sh /cli/
+COPY che.sh /scripts/
+COPY cli.sh /scripts/
 COPY version /version/
 
-RUN chmod +x /cli/che.sh
+RUN chmod +x /scripts/che.sh
 
-ENTRYPOINT ["/cli/che.sh"]
+ENTRYPOINT ["/scripts/che.sh"]
 
 
