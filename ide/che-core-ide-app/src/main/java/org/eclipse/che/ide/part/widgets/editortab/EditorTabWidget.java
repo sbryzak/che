@@ -327,4 +327,5 @@ public class EditorTabWidget extends Composite implements EditorTab, ContextMenu
             delegate.onTabClose(this);
         }
     }
+
 }

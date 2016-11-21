@@ -45,6 +45,8 @@ public class EditorMultiPartStackPresenter implements EditorMultiPartStack,
     private       PartPresenter               activeEditor;
     private       EditorPartStack             activeEditorPartStack;
 
+    private       State state = State.NORMAL;
+
     @Inject
     public EditorMultiPartStackPresenter(EventBus eventBus,
                                          EditorMultiPartStackView view,
@@ -142,23 +144,27 @@ public class EditorMultiPartStackPresenter implements EditorMultiPartStack,
 
     @Override
     public void maximize() {
+        state = State.MAXIMIZED;
     }
 
     @Override
     public void collapse() {
+        state = State.COLLAPSED;
     }
 
     @Override
     public void minimize() {
+        state = State.MINIMIZED;
     }
 
     @Override
     public void restore() {
+        state = State.NORMAL;
     }
 
     @Override
     public State getPartStackState() {
-        return null;
+        return state;
     }
 
     /** {@inheritDoc} */
