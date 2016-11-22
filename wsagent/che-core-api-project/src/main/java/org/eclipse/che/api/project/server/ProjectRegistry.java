@@ -182,15 +182,12 @@ public class ProjectRegistry {
      *         whether this is automatically detected or explicitly defined project
      * @return project
      * @throws ServerException
-     * @throws ConflictException
-     * @throws NotFoundException
+     *         when path for project is undefined
      */
     RegisteredProject putProject(ProjectConfig config,
                                  FolderEntry folder,
                                  boolean updated,
-                                 boolean detected) throws ServerException,
-                                                          ConflictException,
-                                                          NotFoundException {
+                                 boolean detected) throws ServerException {
 
         final RegisteredProject project = new RegisteredProject(folder, config, updated, detected, this.projectTypeRegistry);
         projects.put(project.getPath(), project);
@@ -224,8 +221,7 @@ public class ProjectRegistry {
      * Attributes defined with particular Project Type
      * If incoming Project Type is primary and:
      * - If the folder located on projectPath is a Project, its Primary PT will be converted to incoming PT
-     * - If the folder located on projectPath is NOT a Project the folder will be converted to "detected" Project
-     * with incoming Primary PT
+     * - If the folder located on projectPath is NOT a Project the folder will be converted to "detected" Project with incoming Primary PT
      * If incoming Project Type is mixin and:
      * - If the folder located on projectPath is a Project, this PT will be added (if not already there) to its Mixin PTs
      * - If the folder located on projectPath is NOT a Project - ConflictException will be thrown
@@ -370,7 +366,7 @@ public class ProjectRegistry {
                     putProject(null, folder, true, false);
                 }
             }
-        } catch (ServerException | ConflictException | NotFoundException e) {
+        } catch (ServerException e) {
             LOG.warn(e.getLocalizedMessage());
         }
     }

@@ -35,7 +35,6 @@ import org.eclipse.che.api.project.server.type.BaseProjectType;
 import org.eclipse.che.api.project.server.type.ProjectTypeDef;
 import org.eclipse.che.api.project.server.type.ProjectTypeRegistry;
 import org.eclipse.che.api.project.server.type.ProjectTypeResolution;
-import org.eclipse.che.api.project.server.type.ValueStorageException;
 import org.eclipse.che.api.project.shared.dto.event.FileWatcherEventType;
 import org.eclipse.che.api.vfs.Path;
 import org.eclipse.che.api.vfs.VirtualFile;
@@ -275,29 +274,8 @@ public final class ProjectManager {
             projectFolder = new FolderEntry(vfs.getRoot().createFolder(path), projectRegistry);
         }
 
-        final RegisteredProject project;
-        try {
-            project = projectRegistry.putProject(projectConfig, projectFolder, true, false);
-        } catch (Exception e) {
-            // rollback project folder
-
-            projectFolder.getVirtualFile().delete();
-            throw e;
-        }
-
-        // unlike imported it is not appropriate for newly created project to have problems
-        if (!project.getProblems().isEmpty()) {
-
-            // rollback project folder
-            projectFolder.getVirtualFile().delete();
-            // remove project entry
-            projectRegistry.removeProjects(projectConfig.getPath());
-            throw new ServerException("Problems occured: " + project.getProblemsStr());
-        }
-
-
+        final RegisteredProject project = projectRegistry.putProject(projectConfig, projectFolder, true, false);
         workspaceProjectsHolder.sync(projectRegistry);
-
         projectRegistry.fireInitHandlers(project);
 
         return project;
@@ -335,7 +313,8 @@ public final class ProjectManager {
      *         if other error occurs
      */
     public List<RegisteredProject> createBatchProjects(List<? extends NewProjectConfig> projectConfigList, boolean rewrite)
-            throws BadRequestException, ConflictException, ForbiddenException, NotFoundException, ServerException, UnauthorizedException {
+            throws BadRequestException, ConflictException, ForbiddenException, NotFoundException, ServerException, UnauthorizedException,
+                   IOException {
         projectTreeChangesDetector.suspend();
         try {
             final List<RegisteredProject> projects = new ArrayList<>(projectConfigList.size());
@@ -347,37 +326,49 @@ public final class ProjectManager {
                     .collect(Collectors.toList());
 
             for (NewProjectConfig projectConfig : sortedConfigList) {
-
+                RegisteredProject registeredProject;
                 final String pathToProject = projectConfig.getPath();
                 final String pathToParent = pathToProject.substring(0, pathToProject.lastIndexOf("/"));
-                if (!pathToParent.equals("/")) {
-                    VirtualFileEntry parentFileEntry = getProjectsRoot().getChild(pathToParent);
-                    if (parentFileEntry == null) {
-                        throw new NotFoundException(format("The parent folder with path %s does not exist.", pathToParent));
-                    }
-                }
-
                 final List<Problem> problems = validateProjectTypeFor(projectConfig);
 
-                RegisteredProject registeredProject;
-                final SourceStorage sourceStorage = projectConfig.getSource();
-                final VirtualFileEntry projectFileEntry = getProjectsRoot().getChild(pathToProject);
 
-                if (sourceStorage != null && !isNullOrEmpty(sourceStorage.getLocation())) {
+                final VirtualFileEntry parentFileEntry = getProjectsRoot().getChild(pathToParent);
+                if (!pathToParent.equals("/") && parentFileEntry == null) {
+                    registeredProject = projectRegistry.putProject(projectConfig, null, true, false);
+                    projects.add(registeredProject);
+                    continue;
+                }
 
-                    try {
+                VirtualFileEntry projectFileEntry = getProjectsRoot().getChild(pathToProject);
+                try {
+                    final SourceStorage sourceStorage = projectConfig.getSource();
+                    if (sourceStorage != null && !isNullOrEmpty(sourceStorage.getLocation())) {
                         doImportProject(pathToProject, sourceStorage, rewrite);
-                        registeredProject = updateProject(projectConfig);
-                    } catch (Exception e) {
+                    } else if (projectFileEntry == null) {
                         registeredProject = doCreateProject(projectConfig, projectConfig.getOptions());
-                        registeredProject.getProblems().add(new Problem(10, "No source"));
+                        projects.add(registeredProject);
+                        continue;
+
                     }
 
-                } else if (projectFileEntry != null) {
-                    registeredProject = updateProject(projectConfig);
-                } else {
-                    registeredProject = doCreateProject(projectConfig, projectConfig.getOptions());
+                } catch (final Exception e) {
+                    projectFileEntry = getProjectsRoot().getChild(pathToProject);
+                    if (projectFileEntry == null) {//source code is absent
+                        throw e;
+                    }
                 }
+
+                projectFileEntry = getProjectsRoot().getChild(pathToProject);
+
+
+                try {
+                    registeredProject = updateProject(projectConfig);
+                } catch (Exception e) {
+                    registeredProject = projectRegistry.putProject(projectConfig, baseFolder, true, false);
+                    registeredProject.getProblems().add(new Problem(14, "The project is not updated, caused by " + e.getLocalizedMessage()));
+                }
+
+
 
                 registeredProject.getProblems().addAll(problems);
                 projects.add(registeredProject);
@@ -466,8 +457,7 @@ public final class ProjectManager {
                                                                            ServerException,
                                                                            NotFoundException,
                                                                            ConflictException {
-        String path = newConfig.getPath();
-
+        final String path = newConfig.getPath();
         if (path == null) {
             throw new ConflictException("Project path is not defined");
         }
@@ -479,18 +469,7 @@ public final class ProjectManager {
             throw new NotFoundException(format("Folder '%s' doesn't exist.", path));
         }
 
-        ProjectConfig oldConfig = projectRegistry.getProject(path);
-
         final RegisteredProject project = projectRegistry.putProject(newConfig, baseFolder, true, false);
-
-        // unlike imported it is not appropriate for updated project to have problems
-        if (!project.getProblems().isEmpty()) {
-
-            // rollback project folder
-            projectRegistry.putProject(oldConfig, baseFolder, false, false);
-            throw new ServerException("Problems occured: " + project.getProblemsStr());
-        }
-
         workspaceProjectsHolder.sync(projectRegistry);
 
         projectRegistry.fireInitHandlers(project);
@@ -596,11 +575,9 @@ public final class ProjectManager {
      * @return resolution object
      * @throws ServerException
      * @throws NotFoundException
-     * @throws ValueStorageException
      */
     public ProjectTypeResolution estimateProject(String path, String projectTypeId) throws ServerException,
-                                                                                           NotFoundException,
-                                                                                           ValueStorageException {
+                                                                                           NotFoundException {
         final ProjectTypeDef projectType = projectTypeRegistry.getProjectType(projectTypeId);
         if (projectType == null) {
             throw new NotFoundException("Project Type to estimate needed.");
@@ -633,13 +610,9 @@ public final class ProjectManager {
                 continue;
             }
 
-            try {
-                final ProjectTypeResolution resolution = estimateProject(path, type.getId());
-                if (resolution.matched()) {
-                    resolutions.add(resolution);
-                }
-            } catch (ValueStorageException e) {
-                LOG.warn(e.getLocalizedMessage(), e);
+            final ProjectTypeResolution resolution = estimateProject(path, type.getId());
+            if (resolution.matched()) {
+                resolutions.add(resolution);
             }
         }
 

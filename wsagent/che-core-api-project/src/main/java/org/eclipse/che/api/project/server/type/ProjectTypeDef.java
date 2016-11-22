@@ -169,7 +169,7 @@ public abstract class ProjectTypeDef implements ProjectType {
         this.ancestors.add(ancestor);
     }
 
-    public ProjectTypeResolution resolveSources(FolderEntry projectFolder) throws ValueStorageException {
+    public ProjectTypeResolution resolveSources(FolderEntry projectFolder) {
         Map<String, Value> matchAttrs = new HashMap<>();
         for (Map.Entry<String, Attribute> entry : attributes.entrySet()) {
             Attribute attr = entry.getValue();
@@ -178,8 +178,15 @@ public abstract class ProjectTypeDef implements ProjectType {
                 Variable var = (Variable)attr;
                 ValueProviderFactory factory = var.getValueProviderFactory();
                 if (factory != null) {
-                    Value value = new AttributeValue(factory.newInstance(projectFolder).getValues(name));
-                    if (value.isEmpty()) {
+
+                    Value value;
+                    try {
+                        value = new AttributeValue(factory.newInstance(projectFolder).getValues(name));
+                    } catch (ValueStorageException e) {
+                        value = null;
+                    }
+
+                    if (value == null || value.isEmpty()) {
                         if (var.isRequired()) {
                             // this PT is not match
                             return new DefaultResolution(id, new HashMap<>(), false);

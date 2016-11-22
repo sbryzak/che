@@ -10,14 +10,12 @@
  *******************************************************************************/
 package org.eclipse.che.api.project.server;
 
-import org.eclipse.che.api.core.NotFoundException;
 import org.eclipse.che.api.core.ServerException;
 import org.eclipse.che.api.core.model.project.ProjectConfig;
 import org.eclipse.che.api.core.model.project.SourceStorage;
 import org.eclipse.che.api.core.model.project.type.Attribute;
 import org.eclipse.che.api.core.model.project.type.Value;
 import org.eclipse.che.api.project.server.type.AttributeValue;
-import org.eclipse.che.api.project.server.type.ProjectTypeConstraintException;
 import org.eclipse.che.api.project.server.type.ProjectTypeDef;
 import org.eclipse.che.api.project.server.type.ProjectTypeRegistry;
 import org.eclipse.che.api.project.server.type.ValueProvider;
@@ -32,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static java.lang.String.format;
 
 /**
  * Internal Project implementation.
@@ -63,15 +63,14 @@ public class RegisteredProject implements ProjectConfig {
      *         if this project was detected, initialized when "parent" project initialized
      * @param projectTypeRegistry
      *         project type registry
+     * @throws ServerException
+     *         when path for project is undefined
      */
     RegisteredProject(FolderEntry folder,
                       ProjectConfig config,
                       boolean updated,
                       boolean detected,
-                      ProjectTypeRegistry projectTypeRegistry) throws NotFoundException,
-                                                                      ProjectTypeConstraintException,
-                                                                      ServerException,
-                                                                      ValueStorageException {
+                      ProjectTypeRegistry projectTypeRegistry) throws ServerException {
         problems = new ArrayList<>();
         attributes = new HashMap<>();
 
@@ -85,7 +84,7 @@ public class RegisteredProject implements ProjectConfig {
         }
 
         this.folder = folder;
-        this.config = (config == null) ? new NewProjectConfigImpl(path) : config;
+        this.config = config == null ? new NewProjectConfigImpl(path) : config;
         this.updated = updated;
         this.detected = detected;
 
@@ -96,6 +95,7 @@ public class RegisteredProject implements ProjectConfig {
         if (config == null) {
             problems.add(new Problem(11, "No project configured in workspace " + this.config.getPath()));
         }
+
 
         // 1. init project types
         this.types = new ProjectTypes(this.config.getPath(), this.config.getType(), this.config.getMixins(), projectTypeRegistry, problems);
@@ -110,13 +110,9 @@ public class RegisteredProject implements ProjectConfig {
 
     /**
      * Initialize project attributes.
-     *
-     * @throws ValueStorageException
-     * @throws ProjectTypeConstraintException
-     * @throws ServerException
-     * @throws NotFoundException
+     * Note: the problem with {@link Problem#code} = 13 will be added when a value for some attribute is not initialized
      */
-    private void initAttributes() throws ValueStorageException, ProjectTypeConstraintException, ServerException, NotFoundException {
+    private void initAttributes() {
 
         Set<Attribute> invalidAttributes = new HashSet<>();
 
@@ -140,12 +136,17 @@ public class RegisteredProject implements ProjectConfig {
 
                     if (folder != null) {
 
-                        if (!valueProvider.isSettable() || value.isEmpty()) {
-                            // get provided value
-                            value = new AttributeValue(valueProvider.getValues(name));
-                        } else {
-                            // set provided (not empty) value
-                            valueProvider.setValues(name, value.getList());
+                        try {
+                            if (!valueProvider.isSettable() || value.isEmpty()) {
+                                // get provided value
+                                value = new AttributeValue(valueProvider.getValues(name));
+                            } else {
+                                // set provided (not empty) value
+                                valueProvider.setValues(name, value.getList());
+                            }
+                        } catch (ValueStorageException e) {
+                            this.problems.add(new Problem(13, format("Value for attribute %s is not initialized, caused by: %s",
+                                                                     variable.getId(), e.getLocalizedMessage())));
                         }
 
                     } else {
@@ -166,7 +167,6 @@ public class RegisteredProject implements ProjectConfig {
         }
 
         types.reset(invalidAttributes);
-
     }
 
     /**

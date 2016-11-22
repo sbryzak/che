@@ -1,5 +1,286 @@
 [
   {
+    "name": "artik-samples",
+    "displayName": "artik-samples",
+    "path": "/artik-samples",
+    "description": "A set of ARTIK SDK samples",
+    "projectType": "c",
+    "mixins": [],
+    "attributes": {},
+    "projects": [
+      {
+        "name": "adc",
+        "displayName": "adc",
+        "path": "/artik-samples/adc",
+        "description": "ADC test",
+        "type": "c",
+        "mixins": [],
+        "attributes": {},
+        "modules": [],
+        "problems": [],
+        "source": {},
+        "commands": [],
+        "links": [],
+        "category": "Samples",
+        "tags": ["Artik"]
+      },
+      {
+        "name": "bluetooth",
+        "displayName": "bluetooth",
+        "path": "/artik-samples/bluetooth",
+        "description": "Bluetooth test",
+        "type": "c",
+        "mixins": [],
+        "attributes": {},
+        "modules": [],
+        "problems": [],
+        "source": {},
+        "commands": [],
+        "links": [],
+        "category": "Samples",
+        "tags": ["Artik"]
+      },
+      {
+        "name": "cloud",
+        "displayName": "cloud",
+        "path": "/artik-samples/cloud",
+        "description": "Cloud test",
+        "type": "c",
+        "mixins": [],
+        "attributes": {},
+        "modules": [],
+        "problems": [],
+        "source": {},
+        "commands": [],
+        "links": [],
+        "category": "Samples",
+        "tags": ["Artik"]
+      },
+      {
+        "name": "gpio",
+        "displayName": "gpio",
+        "path": "/artik-samples/gpio",
+        "description": "Gpio test",
+        "type": "c",
+        "mixins": [],
+        "attributes": {},
+        "modules": [],
+        "problems": [],
+        "source": {},
+        "commands": [],
+        "links": [],
+        "category": "Samples",
+        "tags": ["Artik"]
+      },
+      {
+        "name": "http",
+        "displayName": "http",
+        "path": "/artik-samples/http",
+        "description": "Http test",
+        "type": "c",
+        "mixins": [],
+        "attributes": {},
+        "modules": [],
+        "problems": [],
+        "source": {},
+        "commands": [],
+        "links": [],
+        "category": "Samples",
+        "tags": ["Artik"]
+      },
+      {
+        "name": "i2c",
+        "displayName": "i2c",
+        "path": "/artik-samples/i2c",
+        "description": "i2c test",
+        "type": "c",
+        "mixins": [],
+        "attributes": {},
+        "modules": [],
+        "problems": [],
+        "source": {},
+        "commands": [],
+        "links": [],
+        "category": "Samples",
+        "tags": ["Artik"]
+      },
+      {
+        "name": "lwm2m",
+        "displayName": "lwm2m",
+        "path": "/artik-samples/lwm2m",
+        "description": "lwm2m test",
+        "type": "c",
+        "mixins": [],
+        "attributes": {},
+        "modules": [],
+        "problems": [],
+        "source": {},
+        "commands": [],
+        "links": [],
+        "category": "Samples",
+        "tags": ["Artik"]
+      },
+      {
+        "name": "media",
+        "displayName": "media",
+        "path": "/artik-samples/media",
+        "description": "Media test",
+        "type": "c",
+        "mixins": [],
+        "attributes": {},
+        "modules": [],
+        "problems": [],
+        "source": {},
+        "commands": [],
+        "links": [],
+        "category": "Samples",
+        "tags": ["Artik"]
+      },
+      {
+        "name": "network",
+        "displayName": "network",
+        "path": "/artik-samples/network",
+        "description": "Network test",
+        "type": "c",
+        "mixins": [],
+        "attributes": {},
+        "modules": [],
+        "problems": [],
+        "source": {},
+        "commands": [],
+        "links": [],
+        "category": "Samples",
+        "tags": ["Artik"]
+      },
+      {
+        "name": "pwm",
+        "displayName": "pwm",
+        "path": "/artik-samples/pwm",
+        "description": "pwm test",
+        "type": "c",
+        "mixins": [],
+        "attributes": {},
+        "modules": [],
+        "problems": [],
+        "source": {},
+        "commands": [],
+        "links": [],
+        "category": "Samples",
+        "tags": ["Artik"]
+      },
+      {
+        "name": "serial",
+        "displayName": "serial",
+        "path": "/artik-samples/serial",
+        "description": "Serial test",
+        "type": "c",
+        "mixins": [],
+        "attributes": {},
+        "modules": [],
+        "problems": [],
+        "source": {},
+        "commands": [],
+        "links": [],
+        "category": "Samples",
+        "tags": ["Artik"]
+      },
+      {
+        "name": "spi",
+        "displayName": "spi",
+        "path": "/artik-samples/spi",
+        "description": "Spi test",
+        "type": "c",
+        "mixins": [],
+        "attributes": {},
+        "modules": [],
+        "problems": [],
+        "source": {},
+        "commands": [],
+        "links": [],
+        "category": "Samples",
+        "tags": ["Artik"]
+      },
+      {
+        "name": "time",
+        "displayName": "time",
+        "path": "/artik-samples/time",
+        "description": "Time test",
+        "type": "c",
+        "mixins": [],
+        "attributes": {},
+        "modules": [],
+        "problems": [],
+        "source": {},
+        "commands": [],
+        "links": [],
+        "category": "Samples",
+        "tags": ["Artik"]
+      },
+      {
+        "name": "websocket",
+        "displayName": "websocket",
+        "path": "/artik-samples/websocket",
+        "description": "Websocket test",
+        "type": "c",
+        "mixins": [],
+        "attributes": {},
+        "modules": [],
+        "problems": [],
+        "source": {},
+        "commands": [],
+        "links": [],
+        "category": "Samples",
+        "tags": ["Artik"]
+      },
+      {
+        "name": "wifi",
+        "displayName": "wifi",
+        "path": "/artik-samples/wifi",
+        "description": "WiFi test",
+        "type": "c",
+        "mixins": [],
+        "attributes": {},
+        "modules": [],
+        "problems": [],
+        "source": {},
+        "commands": [],
+        "links": [],
+        "category": "Samples",
+        "tags": ["Artik"]
+      },
+      {
+        "name": "zigbee",
+        "displayName": "zigbee",
+        "path": "/artik-samples/zigbee",
+        "description": "Zigbee test",
+        "type": "c",
+        "mixins": [],
+        "attributes": {},
+        "modules": [],
+        "problems": [],
+        "source": {},
+        "commands": [],
+        "links": [],
+        "category": "Samples",
+        "tags": ["Artik"]
+      }
+    ],
+    "problems": [],
+    "source": {
+      "type": "git",
+      "location": "https://github.com/artik-iot/artik-sdk-examples",
+      "parameters": {
+        "branch": "master"
+      }
+    },
+    "commands": [],
+    "links": [],
+    "category": "Samples",
+    "tags": [
+      "Artik"
+    ]
+  },
+  {
     "name": "web-java-petclinic",
     "displayName": "web-java-petclinic",
     "path": "/web-java-petclinic",
@@ -17,7 +298,7 @@
       "type": "git",
       "location": "https://github.com/che-samples/web-java-spring-petclinic.git",
       "parameters": {
-        "branch":"mysql"
+        "branch": "mysql"
       }
     },
     "commands": [
@@ -507,7 +788,6 @@
       "rails"
     ]
   },
-
   {
     "name": "nodejs-hello-world",
     "displayName": "nodejs-hello-world",
@@ -543,51 +823,51 @@
       "Node.JS"
     ]
   },
-  {                                                                                                                     
-    "name": "angular-patternfly-starter",                                                                               
-    "displayName": "angular-patternfly-starter",                                                                        
-    "path": "/angular-patternfly-starter",                                                                              
-    "description": "Angular PatternFly Starter Project.",                                                               
-    "projectType": "node-js",                                                                                           
-    "mixins": [],                                                                                                       
-    "attributes": {                                                                                                     
-      "language": [                                                                                                     
-        "javascript"                                                                                                    
-      ]                                                                                                                 
-    },                                                                                                                  
-    "modules": [],                                                                                                      
-    "problems": [],                                                                                                     
-    "source": {                                                                                                         
-      "type": "git",                                                                                                    
-      "location": "https://github.com/patternfly/angular-patternfly-demo-app.git",                                            
-      "parameters": {}                                                                                                  
-    },                                                                                                                  
-    "commands": [                                                                                                       
-      {                                                                                                                 
-        "name": "install dependencies",                                                                                 
-        "type": "custom",                                                                                               
-        "commandLine": "cd ${current.project.path} && npm install --no-bin-links && bower install",                     
-        "attributes": {                                                                                                 
-          "previewUrl": ""                                                                                              
-        }                                                                                                               
-      },                                                                                                                
-      {                                                                                                                 
-        "name": "run",                                                                                                  
-        "type": "custom",                                                                                               
-        "commandLine": "cd ${current.project.path} && grunt server",                                                    
-        "attributes": {                                                                                                 
-          "previewUrl": "http://${server.port.8003}"                                                                    
-        }                                                                                                               
-      }                                                                                                                 
-    ],                                                                                                                  
-    "links": [],                                                                                                        
-    "category": "Samples",                                                                                              
-    "tags": [                                                                                                           
-      "nodejs",                                                                                                         
-      "patternfly",                                                                                                     
-      "javascript",                                                                                                     
-      "Node.JS"                                                                                                         
-    ]                                                                                                                   
+  {
+    "name": "angular-patternfly-starter",
+    "displayName": "angular-patternfly-starter",
+    "path": "/angular-patternfly-starter",
+    "description": "Angular PatternFly Starter Project.",
+    "projectType": "node-js",
+    "mixins": [],
+    "attributes": {
+      "language": [
+        "javascript"
+      ]
+    },
+    "modules": [],
+    "problems": [],
+    "source": {
+      "type": "git",
+      "location": "https://github.com/patternfly/angular-patternfly-demo-app.git",
+      "parameters": {}
+    },
+    "commands": [
+      {
+        "name": "install dependencies",
+        "type": "custom",
+        "commandLine": "cd ${current.project.path} && npm install --no-bin-links && bower install",
+        "attributes": {
+          "previewUrl": ""
+        }
+      },
+      {
+        "name": "run",
+        "type": "custom",
+        "commandLine": "cd ${current.project.path} && grunt server",
+        "attributes": {
+          "previewUrl": "http://${server.port.8003}"
+        }
+      }
+    ],
+    "links": [],
+    "category": "Samples",
+    "tags": [
+      "nodejs",
+      "patternfly",
+      "javascript",
+      "Node.JS"
+    ]
   },
   {
     "name": "web-java-spring",
@@ -1193,7 +1473,7 @@
         "type": "custom",
         "commandLine": "print-help && sudo HOME=/root /opt/bitnami/nami/bin/nami execute codeigniter createProject --force $(basename ${current.project.path}) | grep -v undefined && php -S 0.0.0.0:8000 -t ${current.project.path}",
         "attributes": {
-           "previewUrl": "http://${server.port.8000}/"
+          "previewUrl": "http://${server.port.8000}/"
         }
       },
       {
@@ -1201,7 +1481,7 @@
         "type": "custom",
         "commandLine": "print-help && php -S 0.0.0.0:8000 -t ${current.project.path}",
         "attributes": {
-           "previewUrl": "http://${server.port.8000}/"
+          "previewUrl": "http://${server.port.8000}/"
         }
       }
     ],
@@ -1238,7 +1518,7 @@
         "type": "custom",
         "commandLine": "print-help && sudo HOME=/root nami execute symfony createProject --force $(basename ${current.project.path}) | grep -v undefined && ln -fs ${current.project.path}/web/app.php ${current.project.path}/web/index.php && php -S 0.0.0.0:8000 -t ${current.project.path}/web",
         "attributes": {
-           "previewUrl": "http://${server.port.8000}/"
+          "previewUrl": "http://${server.port.8000}/"
         }
       },
       {
@@ -1246,7 +1526,7 @@
         "type": "custom",
         "commandLine": "print-help && php -S 0.0.0.0:8000 -t ${current.project.path}/web",
         "attributes": {
-           "previewUrl": "http://${server.port.8000}/"
+          "previewUrl": "http://${server.port.8000}/"
         }
       }
     ],
@@ -1283,7 +1563,7 @@
         "type": "custom",
         "commandLine": "print-help && sudo HOME=/root /opt/bitnami/nami/bin/nami execute activator createProject --force $(basename ${current.project.path}) play-java | grep -v undefined && cd ${current.project.path} && /opt/bitnami/activator/bin/activator -Dsbt.log.noformat=true -Doffline=true -Dhttp.host=0.0.0.0 -Dhttp.port=9000 ~run",
         "attributes": {
-           "previewUrl": "http://${server.port.9000}/"
+          "previewUrl": "http://${server.port.9000}/"
         }
       },
       {
@@ -1297,7 +1577,7 @@
         "type": "custom",
         "commandLine": "print-help && cd ${current.project.path} && /opt/bitnami/activator/bin/activator -Doffline=true -Dhttp.host=0.0.0.0 -Dhttp.port=9000 -Dsbt.log.noformat=true ~run",
         "attributes": {
-           "previewUrl": "http://${server.port.9000}/"
+          "previewUrl": "http://${server.port.9000}/"
         }
       }
     ],
@@ -1376,13 +1656,12 @@
       "type": "git",
       "location": "https://github.com/platformio/platformio-examples.git",
       "parameters": {
-        "keepDir":"atmelavr-and-arduino/arduino-blink",
+        "keepDir": "atmelavr-and-arduino/arduino-blink",
         "keepVcs": "false",
         "convertToTopLevelProject": "true"
       }
     },
     "commands": [
-
     ],
     "links": [],
     "category": "Samples",
@@ -1408,13 +1687,12 @@
       "type": "git",
       "location": "https://github.com/platformio/platformio-examples.git",
       "parameters": {
-        "keepDir":"mbed/mbed-blink",
+        "keepDir": "mbed/mbed-blink",
         "keepVcs": "false",
         "convertToTopLevelProject": "true"
       }
     },
     "commands": [
-
     ],
     "links": [],
     "category": "Samples",
