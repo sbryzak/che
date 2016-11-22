@@ -331,45 +331,40 @@ public final class ProjectManager {
                 final String pathToParent = pathToProject.substring(0, pathToProject.lastIndexOf("/"));
                 final List<Problem> problems = validateProjectTypeFor(projectConfig);
 
-
-                final VirtualFileEntry parentFileEntry = getProjectsRoot().getChild(pathToParent);
-                if (!pathToParent.equals("/") && parentFileEntry == null) {
+                if (!pathToParent.equals("/") && !isVirtualFileExist(pathToParent)) {
+                    //parent is not exist -> project config will be added with problem code = 10 (No project folder on file system)
                     registeredProject = projectRegistry.putProject(projectConfig, null, true, false);
                     projects.add(registeredProject);
                     continue;
                 }
 
-                VirtualFileEntry projectFileEntry = getProjectsRoot().getChild(pathToProject);
+                //creating project(by config or by importing source code)
                 try {
                     final SourceStorage sourceStorage = projectConfig.getSource();
                     if (sourceStorage != null && !isNullOrEmpty(sourceStorage.getLocation())) {
                         doImportProject(pathToProject, sourceStorage, rewrite);
-                    } else if (projectFileEntry == null) {
+                    } else if (!isVirtualFileExist(pathToProject)) {
                         registeredProject = doCreateProject(projectConfig, projectConfig.getOptions());
                         projects.add(registeredProject);
                         continue;
-
                     }
-
-                } catch (final Exception e) {
-                    projectFileEntry = getProjectsRoot().getChild(pathToProject);
-                    if (projectFileEntry == null) {//source code is absent
+                } catch (Exception e) {
+                    if (!isVirtualFileExist(pathToProject)) {//project folder is absent
                         throw e;
                     }
                 }
 
-                projectFileEntry = getProjectsRoot().getChild(pathToProject);
-
-
-                try {
-                    registeredProject = updateProject(projectConfig);
-                } catch (Exception e) {
-                    registeredProject = projectRegistry.putProject(projectConfig, baseFolder, true, false);
-                    registeredProject.getProblems().add(new Problem(14, "The project is not updated, caused by " + e.getLocalizedMessage()));
+                //update project
+                if (isVirtualFileExist(pathToProject)) {
+                    try {
+                        registeredProject = updateProject(projectConfig);
+                    } catch (Exception e) {
+                        registeredProject = projectRegistry.putProject(projectConfig, asFolder(pathToProject), true, false);
+                        registeredProject.getProblems().add(new Problem(14, "The project is not updated, caused by " + e.getLocalizedMessage()));
+                    }
+                } else {
+                    registeredProject = projectRegistry.putProject(projectConfig, null, true, false);
                 }
-
-
-
                 registeredProject.getProblems().addAll(problems);
                 projects.add(registeredProject);
             }
@@ -463,8 +458,6 @@ public final class ProjectManager {
         }
 
         final FolderEntry baseFolder = asFolder(path);
-
-        // If a project does not exist in the target path, create a new one
         if (baseFolder == null) {
             throw new NotFoundException(format("Folder '%s' doesn't exist.", path));
         }
@@ -762,6 +755,10 @@ public final class ProjectManager {
         return move;
     }
 
+    boolean isVirtualFileExist(String path) throws ServerException {
+        return asVirtualFileEntry(path) != null;
+    }
+
     FolderEntry asFolder(String path) throws NotFoundException, ServerException {
         final VirtualFileEntry entry = asVirtualFileEntry(path);
         if (entry == null) {
@@ -775,7 +772,7 @@ public final class ProjectManager {
         return (FolderEntry)entry;
     }
 
-    VirtualFileEntry asVirtualFileEntry(String path) throws NotFoundException, ServerException {
+    VirtualFileEntry asVirtualFileEntry(String path) throws ServerException {
         final String apath = ProjectRegistry.absolutizePath(path);
         final FolderEntry root = getProjectsRoot();
         return root.getChild(apath);
