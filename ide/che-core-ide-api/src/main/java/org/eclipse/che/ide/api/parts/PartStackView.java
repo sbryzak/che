@@ -67,6 +67,7 @@ public interface PartStackView extends View<PartStackView.ActionDelegate> {
          *         orientation of the Tab (e.g. LEFT or RIGHT)
          */
         void setTabPosition(@NotNull TabPosition tabPosition);
+
     }
 
     /** Add Tab */
@@ -82,6 +83,8 @@ public interface PartStackView extends View<PartStackView.ActionDelegate> {
 
     /** Set PartStack focused */
     void setFocus(boolean focused);
+
+    void setMaximized(boolean maximized);
 
     /** Update Tab */
     void updateTabItem(@NotNull PartPresenter partPresenter);

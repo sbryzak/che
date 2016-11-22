@@ -273,6 +273,8 @@ public class PartStackPresenter implements Presenter, PartStackView.ActionDelega
 
     @Override
     public void maximize() {
+        view.setMaximized(true);
+
         if (state == State.MAXIMIZED) {
             workBenchPartController.maximize();
             return;
@@ -293,6 +295,8 @@ public class PartStackPresenter implements Presenter, PartStackView.ActionDelega
 
     @Override
     public void collapse() {
+        view.setMaximized(false);
+
         if (state != State.NORMAL) {
             return;
         }
@@ -313,6 +317,8 @@ public class PartStackPresenter implements Presenter, PartStackView.ActionDelega
 
     @Override
     public void minimize() {
+        view.setMaximized(false);
+
         if (state == State.MAXIMIZED) {
             if (delegate != null) {
                 delegate.onRestore(this);
@@ -332,6 +338,8 @@ public class PartStackPresenter implements Presenter, PartStackView.ActionDelega
 
     @Override
     public void restore() {
+        view.setMaximized(false);
+
         if (state == State.MINIMIZED || state == State.NORMAL) {
             return;
         }

@@ -254,7 +254,7 @@ public class PerspectiveViewImpl extends LayoutPanel implements PerspectiveView<
         delimiter.getStyle().setProperty("height", "1px");
         delimiter.getStyle().setProperty("left", "0px");
         delimiter.getStyle().setProperty("top", "2px");
-        delimiter.getStyle().setProperty("backgroundColor", Style.getSplitterSmallBorderColor());
+        delimiter.getStyle().setProperty("backgroundColor", Style.theme.tabsPanelBackground());
         el.appendChild(delimiter);
     }
 
